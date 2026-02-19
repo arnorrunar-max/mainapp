@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bros & Matcha App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Coffee + Matcha Cafe App</p>
+      <h1>Bros & Matcha</h1>
+      <p class="subtitle">Order ahead, find nearby stands, and share drinks with QR-powered social features.</p>
+    </div>
+    <div class="top-actions">
+      <button id="jumpOrderBtn" class="primary">Start Order</button>
+      <button id="jumpRewardsBtn">Rewards</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel" id="orderingPanel">
+      <h2>1) Ordering</h2>
+      <div id="menuGrid" class="menu-grid"></div>
+
+      <div class="subpanel">
+        <h3>Build your drink</h3>
+        <form id="builderForm" class="stack">
+          <label>Drink<select id="drinkSelect"></select></label>
+          <label>
+            Size
+            <div id="sizeRow" class="chip-row">
+              <button type="button" class="chip selected" data-size="Small">Small</button>
+              <button type="button" class="chip" data-size="Medium">Medium</button>
+              <button type="button" class="chip" data-size="Large">Large</button>
+            </div>
+          </label>
+          <label>
+            Milk
+            <select id="milkSelect">
+              <option>Whole Milk</option>
+              <option>Oat Milk</option>
+              <option>Almond Milk</option>
+              <option>Coconut Milk</option>
+              <option>None</option>
+            </select>
+          </label>
+          <label>
+            Add-ons
+            <div id="addonsRow" class="checks">
+              <label><input type="checkbox" value="Extra Shot" /> Extra Shot</label>
+              <label><input type="checkbox" value="Soft Top" /> Soft Top</label>
+              <label><input type="checkbox" value="Boba" /> Boba</label>
+              <label><input type="checkbox" value="Protein" /> Protein</label>
+            </div>
+          </label>
+          <label>Notes<input id="notesInput" placeholder="light ice, half sweet..." /></label>
+          <div class="inline-actions">
+            <button type="submit" class="primary">Add to Cart</button>
+            <button type="button" id="saveCodeBtn">Generate Share Code</button>
+          </div>
+        </form>
+        <div class="result-grid">
+          <div>
+            <p class="meta">Current drink</p>
+            <p id="currentDrink">Select a menu item to begin.</p>
+            <p id="drinkCode" class="code"></p>
+          </div>
+          <div>
+            <p class="meta">Estimated prep</p>
+            <p id="prepTime">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpanel">
+        <h3>Cart</h3>
+        <ul id="cartList" class="list"></ul>
+        <div class="checkout-row">
+          <p>Total: <strong id="cartTotal">$0.00</strong></p>
+          <button id="checkoutBtn" class="primary alt">Checkout</button>
+        </div>
+      </div>
+
+      <div class="subpanel">
+        <h3>Recent orders</h3>
+        <ul id="orderHistoryList" class="list"></ul>
+      </div>
+    </section>
+
+    <section class="panel" id="locationsPanel">
+      <h2>2) Locations Near You</h2>
+      <div class="stack">
+        <div class="inline-actions">
+          <button id="geoBtn" class="primary">Use My Location</button>
+          <button id="openNowBtn">Open Now</button>
+        </div>
+        <div class="inline-input">
+          <input id="zipInput" placeholder="Zip code (e.g. 97205)" />
+          <button id="zipBtn">Search</button>
+        </div>
+      </div>
+      <div class="map">Map preview (mock)</div>
+      <ul id="locationList" class="list"></ul>
+    </section>
+
+    <section class="panel" id="socialPanel">
+      <h2>3) Social + QR Sharing</h2>
+      <div class="subpanel stack">
+        <h3>Friends</h3>
+        <div class="inline-input">
+          <input id="friendInput" placeholder="username" />
+          <button id="addFriendBtn">Add Friend</button>
+        </div>
+        <ul id="friendList" class="list"></ul>
+      </div>
+
+      <div class="subpanel stack">
+        <h3>QR Sharing</h3>
+        <div class="qr-grid">
+          <div class="qr-card">
+            <p class="meta">Friend QR</p>
+            <div id="friendQrCanvas" class="qr-canvas"></div>
+            <p id="friendPayload" class="tiny"></p>
+            <button id="refreshFriendQrBtn">Refresh Friend QR</button>
+          </div>
+          <div class="qr-card">
+            <p class="meta">Drink QR</p>
+            <div id="drinkQrCanvas" class="qr-canvas"></div>
+            <p id="drinkPayload" class="tiny"></p>
+            <button id="refreshDrinkQrBtn">Refresh Drink QR</button>
+          </div>
+        </div>
+
+        <p id="qrScanStatus" class="meta">Scan a QR to add friends or redeem shared drink codes.</p>
+        <div class="inline-actions">
+          <button id="startScanBtn" class="primary">Start Camera Scan</button>
+          <button id="stopScanBtn">Stop Scan</button>
+          <label class="upload-label">Upload QR image<input id="qrUploadInput" type="file" accept="image/*" /></label>
+        </div>
+        <video id="qrVideo" class="qr-video hidden" autoplay playsinline muted></video>
+      </div>
+
+      <div class="subpanel stack">
+        <h3>Code Feed</h3>
+        <div class="inline-actions">
+          <button id="shareCodeBtn" class="primary">Share Current Code</button>
+          <input id="redeemInput" placeholder="Redeem code" />
+          <button id="redeemBtn">Redeem</button>
+        </div>
+        <ul id="feedList" class="list"></ul>
+      </div>
+    </section>
+
+    <section class="panel" id="rewardsPanel">
+      <h2>4) Membership + Rewards</h2>
+      <div class="tier-card">
+        <p class="meta">Current Membership</p>
+        <h3 id="tierLabel">Platinum Broista</h3>
+        <p><span id="pointsLabel">1820</span> points · <span id="streakLabel">12-day streak</span></p>
+        <progress id="tierProgress" value="1820" max="2500"></progress>
+      </div>
+      <div class="subpanel">
+        <h3>Rewards unlocked</h3>
+        <ul class="list">
+          <li>🎉 Free medium drink every 125 points</li>
+          <li>⚡ 2× points from 6AM–11AM weekdays</li>
+          <li>🎂 Birthday free drink + pastry</li>
+          <li>🚗 Priority pickup lane at select locations</li>
+        </ul>
+      </div>
+      <div class="subpanel">
+        <h3>Challenges</h3>
+        <ul id="challengeList" class="list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="checkoutDialog">
+    <h3>Order placed 🎉</h3>
+    <p id="checkoutMessage"></p>
+    <button id="closeDialogBtn" class="primary">Done</button>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
